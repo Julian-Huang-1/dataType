@@ -2,7 +2,12 @@ import React from "react";
 import { DataGridPremium } from "@qvztest/xdgpre";
 import { useState } from "react";
 import Editor from "./Editor";
-import { sql } from "../scripts/sqlite-api.js";
+import { alignment } from "../scripts/utils";
+import {
+  sql,
+  generateCreateTableQuery,
+  generateInsertQuery,
+} from "../scripts/sqlite-api.js";
 import * as XLSX from "xlsx";
 const _rows = [
   { id: 1, col1: "Hello", col2: "World" },
@@ -20,8 +25,9 @@ export default function App() {
     rows: _rows,
     columns: _columns,
   });
-  let queries;
+
   const inputSql = async (e) => {
+    let queries;
     const file = e.target.files[0];
     queries = await file.text();
     queries = queries + "SELECT * FROM t1;";
@@ -55,35 +61,39 @@ export default function App() {
       const workbook = XLSX.read(value, { type: "array" });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      const data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-      console.log(data);
-      const column = data[0];
+      let data = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      data = alignment(data);
+      const columns = data[0];
       //data[0]表示列名
       //每一列都映射成{headerName: "交易时间", field: "transactionTime", key: "transactionTime", editable: true}；
-      const columnData = column.map((colName) => {
-        return {
-          headerName: colName,
-          headerClassName: "super-app-theme--header",
-          field: colName,
-          key: colName,
-          editable: true,
-        };
+      const colsType = {};
+      let queries = "";
+      const _cols = columns.map((col, index) => {
+        colsType[`col${index + 1}`] = { colname: col, type: null };
+        return { field: `col${index + 1}`, headerName: col, width: 150 };
       });
+
       // 将数据转换为对象数组
-      const formattedData = data.slice(1).map((row, rowId) => {
-        const rowData = {};
-        column.forEach((column, index) => {
-          if (!column["id"]) {
-            rowData["id"] = rowId;
+      const TypeL = Object.keys(colsType).length; //暂时未用 以后优化用
+      const _rows = data.slice(1).map((row, index) => {
+        queries += generateInsertQuery("t1", row);
+        let obj = {
+          id: index + 1,
+        };
+        for (let i = 0; i < row.length; i++) {
+          obj[`col${i + 1}`] = row[i];
+          if (TypeL !== 0 && (row[i] || typeof row[i] == "boolean")) {
+            colsType[`col${i + 1}`]["type"] = typeof row[i];
           }
-          rowData[column] = row[index];
-        });
-        return rowData;
+        }
+        return obj;
       });
-      // setData({
-      //   rows: formattedData,
-      //   columns: columnData,
-      // });
+      queries = generateCreateTableQuery("t1", colsType) + queries;
+      sql(queries);
+      setData({
+        rows: _rows,
+        columns: _cols,
+      });
     };
   };
   return (
