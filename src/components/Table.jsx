@@ -20,7 +20,7 @@ const _columns = [
   { field: "col2", headerName: "Column 2", width: 150 },
 ];
 
-export default function App() {
+export function Table() {
   const [data, setData] = useState({
     rows: _rows,
     columns: _columns,

@@ -4,7 +4,8 @@ import Env from "./components/Env";
 import { ai } from "./scripts/ai";
 import Schema from "./components/Schema";
 import { useRef } from "react";
-import Table from "./components/Table";
+
+import { Table } from "./components/Table";
 function App() {
   const [value, setValue] = useState("");
   const [todos, setTodos] = useState([]);
@@ -18,6 +19,7 @@ function App() {
     console.log(env.current);
   }
 
+  console.log(123);
   return (
     <div>
       <Env ref={env}></Env>

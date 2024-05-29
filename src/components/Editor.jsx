@@ -22,7 +22,7 @@ export default function Editor(props) {
     const _cols = results[0].columns.map((col, index) => {
       return { field: `col${index + 1}`, headerName: col, width: 150 };
     });
-    const _rows = results[0].rows.map((row) => {
+    const _rows = results[0].values.map((row) => {
       let obj = {
         id: row[0],
       };
