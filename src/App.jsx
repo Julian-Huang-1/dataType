@@ -1,11 +1,7 @@
 import "./App.css";
 import { useState } from "react";
-import Env from "./components/Env";
-import { ai } from "./scripts/ai";
-import Schema from "./components/Schema";
 import { useRef } from "react";
-
-import { Table } from "./components/Table";
+import { Table2 } from "./components/Table2";
 function App() {
   const [value, setValue] = useState("");
   const [todos, setTodos] = useState([]);
@@ -19,10 +15,9 @@ function App() {
     console.log(env.current);
   }
 
-  console.log(123);
   return (
     <div>
-      <Env ref={env}></Env>
+      {/* <Env ref={env}></Env>
       <Schema ref={schema}></Schema>
       <input
         type="text"
@@ -35,7 +30,8 @@ function App() {
       {todos.map((todo, index) => {
         return <div key={index}>{todo}</div>;
       })}
-      <Table></Table>
+      <Table></Table> */}
+      <Table2 />
     </div>
   );
 }

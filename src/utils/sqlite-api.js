@@ -1,35 +1,9 @@
-//这是用wa-sqlit 的代码
-// import SQLiteESMFactory from "wa-sqlite/dist/wa-sqlite.mjs";
-// import * as SQLite from "wa-sqlite";
-// import { createTag } from "./tag";
-
-// async function initSql() {
-//     const module = await SQLiteESMFactory();
-//     const sqlite3 = SQLite.Factory(module);
-//     const db = await sqlite3.open_v2("myDB");
-//     window["sql"] = createTag(sqlite3, db);
-// }
-
-// initSql()
-
-//现在改成sql.js
-
-import initSqlJs from "sql.js";
-import sqliteUrl from "../assets/sql-wasm.wasm?url";
-const SQL = await initSqlJs({
-  // Required to load the wasm binary asynchronously. Of course, you can host it wherever you want
-  // You can omit locateFile completely when running in node
-  locateFile: () => sqliteUrl,
-});
-
-window["sql"] = new SQL.Database();
-
 export async function sql(queries) {
   const sql = window["sql"];
   const results = await sql.exec(queries);
-  console.log(results);
   return results;
 }
+
 export function generateInsertQuery(t_name, data) {
   let valueT = "";
   for (let i = 0; i < data.length; i++) {

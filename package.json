@@ -25,7 +25,8 @@
     "typechat": "^0.1.0",
     "typescript": "^5.4.5",
     "wa-sqlite": "^1.0.0",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
