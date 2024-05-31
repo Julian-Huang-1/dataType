@@ -7,7 +7,7 @@ import {
   sql,
   generateCreateTableQuery,
   generateInsertQuery,
-} from "../scripts/sqlite-api.js";
+} from "../scripts/sqlite-api.ts";
 import * as XLSX from "xlsx";
 const _rows = [
   { id: 1, col1: "Hello", col2: "World" },

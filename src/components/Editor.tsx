@@ -1,24 +1,16 @@
 import React from "react";
-import { useRef, useEffect } from "react";
-import { sql } from "../scripts/sqlite-api";
+import { sql } from "../utils/sqlite-api";
+import { useRef } from "react";
 
 const value = /* set from `myEditor.getModel()`: */ `UPDATE t1 SET b=100 WHERE a=1;`;
-export default function Editor(props) {
+
+export default function Editor() {
   const ref = useRef();
-
-  //   useEffect(() => {
-  //     console.log(ref);
-  //     const myEditor = monaco.editor.create(ref.current, {
-  //       value,
-  //       language: "sql",
-  //       automaticLayout: false,
-  //     });
-  //   }, []);
-
   const handleClick = async () => {
     let queries = ref.current.value;
     queries = queries + "SELECT * FROM t1;";
     const results = await sql(queries);
+    console.log(results);
     const _cols = results[0].columns.map((col, index) => {
       return { field: `col${index + 1}`, headerName: col, width: 150 };
     });
@@ -31,16 +23,9 @@ export default function Editor(props) {
       }
       return obj;
     });
-    props.setData({
-      rows: _rows,
-      columns: _cols,
-    });
   };
   return (
     <div>
-      {/* <div ref={ref} style={{ height: "500px" }}>
-        Editor
-      </div> */}
       <div>write your sql</div>
       <textarea name="" id="" cols="40" rows="10" ref={ref}></textarea>
       <div>

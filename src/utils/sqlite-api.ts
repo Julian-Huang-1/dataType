@@ -1,10 +1,33 @@
-export async function sql(queries) {
+type Query = string;
+type TableName = string;
+type RowData = any[];
+type TableId = number;
+
+type ColsType = {
+  [key: string]: string | number | boolean;
+};
+
+export class Table {
+  name: TableName;
+  id: TableId;
+  constructor(name: TableName, id: TableId) {
+    this.name = name;
+    this.id = id;
+  }
+}
+
+interface SqlResult {
+  values: (number | string | boolean)[];
+  columns: (number | string)[];
+}
+
+export async function sql(queries: Query): Promise<SqlResult | []> {
   const sql = window["sql"];
-  const results = await sql.exec(queries);
+  const results: SqlResult | [] = await sql.exec(queries);
   return results;
 }
 
-export function generateInsertQuery(t_name, data) {
+export function generateInsertQuery(t_name: TableName, data: RowData): Query {
   let valueT = "";
   for (let i = 0; i < data.length; i++) {
     let value = data[i];
@@ -24,7 +47,10 @@ export function generateInsertQuery(t_name, data) {
 }
 export function generateUpdateQuery() {}
 
-export function generateCreateTableQuery(t_name, colsType) {
+export function generateCreateTableQuery(
+  t_name: TableName,
+  colsType: ColsType | {}
+) {
   let len = Object.keys(colsType).length;
   let query = "";
   for (let i = 0; i < len; i++) {

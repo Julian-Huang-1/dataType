@@ -2,6 +2,7 @@ import "./App.css";
 import { useState } from "react";
 import { useRef } from "react";
 import { Table2 } from "./components/Table2";
+import Editor from "./components/Editor.tsx";
 function App() {
   const [value, setValue] = useState("");
   const [todos, setTodos] = useState([]);
@@ -31,6 +32,7 @@ function App() {
         return <div key={index}>{todo}</div>;
       })}
       <Table></Table> */}
+      <Editor />
       <Table2 />
     </div>
   );
