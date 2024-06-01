@@ -3,7 +3,7 @@ import { readExcel } from "../utils/fileAccess";
 import { ChangeEvent } from "react";
 
 export const InputExcel = () => {
-  const inputExcel = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length == 0) {
       return;
     }
@@ -13,7 +13,7 @@ export const InputExcel = () => {
   return (
     <div>
       <label htmlFor="inputExcel">excel</label>
-      <input id="inputExcel" type="file" onChange={inputExcel} />
+      <input id="inputExcel" type="file" onChange={handleChange} />
     </div>
   );
 };

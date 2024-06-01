@@ -1,8 +1,9 @@
 import React from "react";
 import { readSqlfile } from "../utils/fileAccess";
+import { ChangeEvent } from "react";
 
 export const InputSql = () => {
-  const inputSql = async (e) => {
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length == 0) {
       return;
     }
@@ -11,7 +12,7 @@ export const InputSql = () => {
   return (
     <div>
       <label htmlFor="inputSql">sql</label>
-      <input id="inputSql" type="file" onChange={inputSql} />
+      <input id="inputSql" type="file" onChange={handleChange} />
     </div>
   );
 };

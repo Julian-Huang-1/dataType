@@ -2,17 +2,20 @@ import useDbStore from "../store/sqlStore";
 import React from "react";
 import { DataGridPremium } from "@qvztest/xdgpre";
 import { InputSql } from "./inputSql";
-import { InputExcel } from "./InputExcel.tsx";
-import { switchTable } from "../store/sqlStore";
+import { InputExcel } from "./InputExcel";
+import { switchTable } from "../store/sqlStore.ts";
 
 export function Table2() {
   const { tables, data } = useDbStore();
   return (
     <div>
       {tables.map((table, index) => {
-        const handleClick = (e) => {
-          console.log(table);
-          switchTable(e.target.innerHTML);
+        const handleClick = (
+          e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        ) => {
+          if (table !== null) {
+            switchTable(table);
+          }
         };
         return (
           <button onClick={handleClick} key={index}>

@@ -1,11 +1,24 @@
-type Query = string;
-type TableName = string;
-type RowData = any[];
-type TableId = number;
+export type Query = string;
+export type TableName = string;
+export type RowData = any[];
+export type TableId = number;
 
-type ColsType = {
-  [key: string]: string | number | boolean;
+export type ColsType = {
+  [key: string]: { colname: string; type: (number | string | boolean) | null };
 };
+
+export type SqlResult = SqlItem | [];
+export interface SqlItem {
+  0: {
+    values: any[];
+    columns: any[];
+  };
+}
+
+export interface TableType {
+  name: TableName;
+  id: TableId;
+}
 
 export class Table {
   name: TableName;
@@ -16,15 +29,16 @@ export class Table {
   }
 }
 
-interface SqlResult {
-  values: (number | string | boolean)[];
-  columns: (number | string)[];
-}
-
 export async function sql(queries: Query): Promise<SqlResult | []> {
+  //@ts-ignore
   const sql = window["sql"];
-  const results: SqlResult | [] = await sql.exec(queries);
-  return results;
+  try {
+    const results: SqlResult | [] = await sql.exec(queries);
+    return results;
+  } catch (e: any) {
+    console.log(e.message);
+    return [];
+  }
 }
 
 export function generateInsertQuery(t_name: TableName, data: RowData): Query {
@@ -46,10 +60,9 @@ export function generateInsertQuery(t_name: TableName, data: RowData): Query {
   return `INSERT INTO ${t_name} VALUES (${valueT});`;
 }
 export function generateUpdateQuery() {}
-
 export function generateCreateTableQuery(
   t_name: TableName,
-  colsType: ColsType | {}
+  colsType: ColsType
 ) {
   let len = Object.keys(colsType).length;
   let query = "";
@@ -71,4 +84,15 @@ export function generateCreateTableQuery(
   }
   query = query.slice(0, -1);
   return `CREATE TABLE ${t_name}(${query});`;
+}
+export function execCreateTableQuery(
+  t_name: TableName,
+  colsType: ColsType | {}
+) {
+  const query = generateCreateTableQuery(t_name, colsType);
+  sql(query);
+}
+export function execInsertTableQuery(t_name: TableName, data: RowData) {
+  const query = generateInsertQuery(t_name, data);
+  sql(query);
 }

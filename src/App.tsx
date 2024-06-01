@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import { useRef } from "react";
-import { Table2 } from "./components/Table2";
+import { Table2 } from "./components/Table2.tsx";
 import Editor from "./components/Editor.tsx";
 function App() {
   const [value, setValue] = useState("");

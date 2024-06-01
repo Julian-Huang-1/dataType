@@ -1,8 +1,15 @@
 import { create } from "zustand";
 import { dataToTable, sqlDataToData } from "../utils/utils";
-import { sql, generateCreateTableQuery } from "../utils/sqlite-api.ts";
-import "../utils/initsql.js";
-import { Table } from "../utils/sqlite-api";
+import { sql, generateCreateTableQuery, SqlResult } from "../utils/sqlite-api";
+import "../utils/initsql";
+import { Table, TableType } from "../utils/sqlite-api";
+import { TableName } from "../utils/sqlite-api";
+import { GridRowsProp, GridColDef } from "@qvztest/xdgpre";
+
+export interface GridType {
+  rows: GridRowsProp;
+  columns: GridColDef[];
+}
 
 const defaultTable = new Table("t1", 1);
 const defaultData = [
@@ -25,7 +32,7 @@ const useDbStore = create(() => {
   };
 });
 
-export const addTable = (data, t_name) => {
+export const addTable = (data: GridType, t_name: TableName) => {
   const state = useDbStore.getState();
   const tname = t_name ? t_name : `t${state.num + 1}`;
   const tid = state.num + 1;
@@ -38,16 +45,18 @@ export const addTable = (data, t_name) => {
   }));
 };
 
-export const setData = (data) => useDbStore.set({ data: data });
+export const setData = (data: GridType) => useDbStore.setState({ data: data });
 
-export const switchTable = async (table) => {
+export const switchTable = async (table: TableType) => {
   if (useDbStore.getState().currentTable == table) return;
-  const result = await sql(`SELECT * FROM ${table}`);
-  let { data } = dataToTable(table, sqlDataToData(result));
-  useDbStore.setState(() => ({
-    data: data,
-    currentTable: table,
-  }));
+  const result: SqlResult = await sql(`SELECT * FROM ${table.name}`);
+  if (result) {
+    let { data } = dataToTable(table.name, sqlDataToData(result));
+    useDbStore.setState(() => ({
+      data: data,
+      currentTable: table,
+    }));
+  }
 };
 
 export const getTableNum = () => useDbStore.getState().num;
